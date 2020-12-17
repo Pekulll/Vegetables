@@ -1,0 +1,57 @@
+body {
+    font-family: 'Product-Sans';
+    padding: 0 0 0 0;
+    margin: 0;
+    overflow-x: hidden;
+    display: inline-block;
+}
+
+#channel_view{
+    width: 82vw;
+    margin: 0 0 8vh 15vw;
+    float: right;
+}
+
+#server_view{
+    position: fixed;
+    width: 13vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background-color: #a7a7a7;
+}
+
+.msg_box {
+    width: 80vw;
+    background-color: #d8d8d8;
+    margin: 15px 1vw 15px 0vw;
+}
+
+.msg_sender {
+    font-size: 100%;
+    font-weight: 800;
+    margin: 0;
+    padding: 10px 15px 0px 15px;
+}
+
+.msg_content {
+    font-size: 90%;
+    margin: 0;
+    padding: 5px 15px 10px 15px;
+}
+
+.msg_box a {
+    font-size: 90%;
+}
+
+form {
+    position: fixed;
+    bottom: 0.1vh;
+    left: 13vw;
+}
+
+.itxt {
+    width: 80vw;
+    margin: 0 0 0 2vw;
+    height: 5vh;
+}

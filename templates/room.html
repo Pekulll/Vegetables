@@ -1,0 +1,18 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <title>Vegetables - {{room.name}}</title>
+</head>
+<body>
+    <div id="channel_view"></div>
+
+    <div id="server_view"></div>
+
+    <form action="/chat?sid={{server.ID}}&rid={{room.ID}}" method="POST" name="message_sender">
+        <input class="itxt" type="text" name="text" id="text" placeholder="Envoyer un message... (max 250 caractères)" autofocus>
+    </form>
+</body>
+</html>
