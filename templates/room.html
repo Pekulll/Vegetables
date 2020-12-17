@@ -9,10 +9,14 @@
 <body>
     <div id="channel_view"></div>
 
-    <div id="server_view"></div>
+    <div id="server_view">
+        {% for r in server.rooms%}
+            <a href="/chat?sid={{server.ID}}&rid={{r.ID}}&l=0">{{r.name}}</a>
+        {% endfor %}
+    </div>
 
-    <form action="/chat?sid={{server.ID}}&rid={{room.ID}}" method="POST" name="message_sender">
-        <input class="itxt" type="text" name="text" id="text" placeholder="Envoyer un message... (max 250 caractères)" autofocus>
+    <form action="/chat?sid={{server.ID}}&rid={{room.ID}}&l=0" method="POST" name="message_sender">
+        <input class="itxt" type="text" name="text" id="text" placeholder="Envoyer un message... (max 250 caractères)" autofocus required>
     </form>
 </body>
 </html>

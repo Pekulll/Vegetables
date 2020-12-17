@@ -2,9 +2,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <title>Vegetables - Servers' list</title>
 </head>
 <body>
-    <a href="/chat/0">Go to the room 0</a>
+    {% for s in servers%}
+        <a href="/chat?sid={{s.ID}}&rid=0&l=0">{{s.name}}</a>
+    {% endfor %}
 </body>
 </html>

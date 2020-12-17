@@ -1,9 +1,18 @@
+:root{
+    --background: #000;
+    --menu-background: rgb(34, 34, 34);
+    --menu-border: rgb(29, 29, 29);
+    --text:#fff
+}
+
 body {
     font-family: 'Product-Sans';
     padding: 0 0 0 0;
     margin: 0;
     overflow-x: hidden;
     display: inline-block;
+    color: var(--text);
+    background-color: var(--background);
 }
 
 #channel_view{
@@ -18,13 +27,22 @@ body {
     height: 100vh;
     left: 0;
     top: 0;
-    background-color: #a7a7a7;
+    background-color: var(--menu-background);
+    border-right: 3px solid var(--menu-border);
+    border-radius: 3px;
+}
+
+#server_view a{
+    display: block;
+    width: 10vh;
+    margin: 2vh 0 0 3vh;
 }
 
 .msg_box {
     width: 80vw;
-    background-color: #d8d8d8;
+    background-color: var(--menu-background);
     margin: 15px 1vw 15px 0vw;
+    border-radius: 5px;
 }
 
 .msg_sender {
@@ -44,14 +62,28 @@ body {
     font-size: 90%;
 }
 
+a{
+    color: var(--text);
+}
+
 form {
     position: fixed;
     bottom: 0.1vh;
     left: 13vw;
 }
 
-.itxt {
+.itxt, .itxt:required, .itxt:valid {
     width: 80vw;
     margin: 0 0 0 2vw;
     height: 5vh;
+    color: var(--text);
+    background-color: var(--menu-background);
+    border-radius: 5px;
+    border: 3px solid var(--menu-background);
+    transition: 0.2s;
+}
+
+.itxt:focus{
+    border: 5px solid var(--menu-border);
+    transition: 0.2s,
 }

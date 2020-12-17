@@ -1,63 +1,70 @@
+import json
+import socket
+
 from flask import Flask, request, render_template, redirect, session
-from objects.chat_object import Room, Message, User, Server
 from random import randint
 from datetime import datetime
 from flask.json import jsonify
 
-KEY = "ert65g4v1ert65g1sdqf46cvsdrgfb54bsgdf6475dsgfb78bsb698b"
+from system.objects.message import Message, User
+from system.objects.server import Server, Room
 
-app = Flask("SupRChat")
+KEY = "tsrgeh4bdgfs654s6d5g4156bf56d878f4gss5f4sd"
+
+app = Flask("Vegetables")
 app.secret_key = KEY
 app.config['SESSION_TYPE'] = 'filesystem'
 
-servers = [Server(0, "Vegetable Official", [], [Room(0, "General", []), Room(1, "Tests", [])])]
-
-names = ["Fraise", "Framboise", "Pomme", "Pêche",
-         "Poire", "Mangue", "Mandarine", "Abricot",
-         "Mirabelle", "Reine claude", "Cérise", "Raisin",
-         "Figue", "Passion", "Annanas", "Banane",
-         "Clémentine", "Groseille", "Courge", "Courgette",
-         "Melon", "Pastèque", "Litchi", "Tomate", "Haricot",
-         "Navet", "Carotte", "Radis", "Blé", "Maïs"]
-
+servers = [Server(0, "Vegetable Official", [], [Room(0, "General", [Message(User(-1, "Vegetables"), "Welcome on Vegetable! We don't know who you are, but you are NICE with people, we know this.", "System", "")]), Room(1, "Discussion", [])])]
+names = None
 too_long_messages = []
 
 @app.route("/")
 def index():
-    return redirect("/chat/0")
+    return render_template("index.html", servers=servers)
 
-@app.route("/chat", methods=["GET", "POST"])
+
+@app.route("/chat", methods=["GET"])
 def chat():
     define_user_name()
     server, room = get_server_room_by_id(request.args['sid'], request.args['rid'])
-    print(server, room)
     
     if room == None:
         return redirect("/notfound")
     
-    if request.method == "GET":
-        server.add_user(User(0, session['name']))
-        return render_template("room.html", server=server, room=room)
-    elif request.method == "POST":
-        message = Message(User(0, session["name"]), request.form["text"], f"{datetime.now().hour:02}:{datetime.now().minute:02}")
+    server.add_user(User(0, session['name']))
+    return render_template("room.html", server=server, room=room)
         
-        if len(message.content) > 0:
-            if len(message.content) <= 250:
-                room.send_message(message)
-            else:
-                too_long_messages.append(message)
-                room.send_message(Message(session["name"], "[Message trop long]", f"{datetime.now().hour:02}:{datetime.now().minute:02}", f"/message/{len(too_long_messages) - 1}"))
+
+@app.route("/chat", methods=["POST"])
+def send_message():
+    server, room = get_server_room_by_id(request.args['sid'], request.args['rid'])
+    message = Message(User(0, session["name"]), request.form["text"], f"{datetime.now().hour:02}:{datetime.now().minute:02}")
+        
+    if len(message.content) > 0:
+        if len(message.content) <= 250:
+            room.send_message(message)
+        else:
+            too_long_messages.append(message)
+            room.send_message(
+                Message(
+                    session["name"], "[Message trop long]",
+                    f"{datetime.now().hour:02}:{datetime.now().minute:02}",
+                    f"/message/{len(too_long_messages) - 1}")
+                )
                 
-        return redirect(f"/chat?sid={server.ID}&rid={room.ID}")
+    return redirect(f"/chat?sid={server.ID}&rid={room.ID}&l={len(room.messages)}")
 
 @app.route("/message/<ID>")
 def display_message(ID):
     return render_template("msg.html", message=too_long_messages[int(ID)])
 
-@app.route("/api/room")
+@app.route("/api/get_room")
 def get_room():
-    server, room = get_server_room_by_id(request.args['server_id'], request.args['room_id'])
-    return jsonify(room.to_dict())
+    server, room = get_server_room_by_id(request.args['sid'], request.args['rid'])
+    return jsonify(room.get_messages(int(request.args["l"])))
+
+#region Methods
 
 def get_server_room_by_id(server_id, room_id):
     global servers
@@ -75,7 +82,18 @@ def get_server_room_by_id(server_id, room_id):
 def define_user_name():
     if not 'name' in session:
         modify_session('name', names[randint(0, len(names) - 1)])
-        
+
+def import_config():
+    global names
+    
+    with open("system/resources/vegetables.json", "r", encoding="utf-8") as json_file:
+        data = json.load(json_file)
+        names = data['names']
+
+#endregion
+
+#region Session modification
+   
 def modify_session(var_name = '', var_value = None, is_list = False):
     if var_name != '' and var_value != None:
         if not is_list:
@@ -89,4 +107,7 @@ def delete_var(var_name = ''):
     if var_name != '':
         session.pop(var_name, None)
 
-app.run(host="192.168.1.24", port=2002)
+#endregion
+
+import_config()
+app.run(host=socket.gethostbyname(socket.gethostname()), port=2002)
